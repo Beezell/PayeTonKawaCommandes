@@ -8,10 +8,9 @@ datasource db {
 }
 
 model Commandes {
-  id          Int      @id @default(autoincrement())
+  id          String   @id @default(uuid())
   created_at  DateTime @default(now()) @db.Timestamptz(6)
-  id_client  Int
-  client_id   Int
+  id_client   String   // ← UUID pour référencer votre table clients
   
   // Relation avec la table Produits
   produits    Produits[]
@@ -20,13 +19,13 @@ model Commandes {
 }
 
 model Produits {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now()) @db.Timestamptz(6)
-  id_commande Int
-  id_prod Int
+  id          Int      @id @default(autoincrement())
+  created_at  DateTime @default(now()) @db.Timestamptz(6)
+  id_commande String
+  id_prod     String
   
   // Relations
-  commande    Commandes  @relation(fields: [id_commande], references: [id])
+  commande    Commandes @relation(fields: [id_commande], references: [id])
   
   @@map("produits")
 }
