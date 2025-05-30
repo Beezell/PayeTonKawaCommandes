@@ -11,6 +11,9 @@ model Commandes {
   id          String   @id @default(uuid())
   created_at  DateTime @default(now()) @db.Timestamptz(6)
   id_client   String   // ← UUID pour référencer votre table clients
+  statut      String   @db.VarChar()
+  montant     Float    @default(0.0)
+  mode_paiement String @db.VarChar()
   
   // Relation avec la table Produits
   produits    Produits[]
@@ -23,6 +26,7 @@ model Produits {
   created_at  DateTime @default(now()) @db.Timestamptz(6)
   id_commande String
   id_prod     String
+  quantite Int @default(1)
   
   // Relations
   commande    Commandes @relation(fields: [id_commande], references: [id])
