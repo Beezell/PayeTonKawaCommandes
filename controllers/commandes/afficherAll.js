@@ -7,7 +7,7 @@ const afficherAll = async (req, res) => {
   try {
     const commandes = await prisma.commandes.findMany({
       include: {
-        produits: true      // Inclut tous les produits de chaque commande
+        produits: true      // on affiche aussi les produits associés à chaque commande
       },
       orderBy: {
         created_at: 'desc'
