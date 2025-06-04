@@ -1,0 +1,130 @@
+{
+  "info": {
+    "name": "API Commandes",
+    "description": "Collection pour tester l'API des commandes avec Prisma",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Commandes",
+      "item": [
+        {
+          "name": "Afficher toutes les commandes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/afficherAll",
+              "host": ["{{baseUrl}}"],
+              "path": ["afficherAll"]
+            }
+          }
+        },
+        {
+          "name": "Ajouter une commande",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "  const response = pm.response.json();",
+                  "  if (response.data && response.data.id) {",
+                  "    pm.environment.set('uuid', response.data.id);",
+                  "  }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_client\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\",\n  \"statut\": \"en_attente\",\n  \"montant\": 120.50,\n  \"mode_paiement\": \"carte\",\n  \"produits\": [\n    { \"id_prod\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"quantite\": 2 },\n    { \"id_prod\": \"d290f1ee-6c53-4b01-90e6-d701748f0851\", \"quantite\": 1 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/ajouter",
+              "host": ["{{baseUrl}}"],
+              "path": ["ajouter"]
+            }
+          }
+        },
+        {
+          "name": "Afficher une commande par UUID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/afficher/{{uuid}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["afficher", "{{uuid}}"]
+            }
+          }
+        },
+        {
+          "name": "Modifier une commande",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"statut\": \"payee\",\n  \"montant\": 180.00,\n  \"mode_paiement\": \"virement\",\n  \"produits\": [\n    { \"id_prod\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"quantite\": 3 }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/modifier/{{uuid}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["modifier", "{{uuid}}"]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une commande",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/supprimer/{{uuid}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["supprimer", "{{uuid}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
