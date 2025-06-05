@@ -1,17 +1,17 @@
-const ajouter = require('../controllers/commandes/ajouter');
+const modifier = require('../controllers/commandes/modifier');
 const { PrismaClient } = require('@prisma/client');
 
-// Mock Prisma
 jest.mock('@prisma/client', () => {
   const mockPrismaClient = {
     commandes: {
-      create: jest.fn(),
       findUnique: jest.fn(),
+      update: jest.fn(),
     },
     produits_Commandes: {
+      deleteMany: jest.fn(),
       createMany: jest.fn(),
     },
-    $transaction: jest.fn((cb) => cb(mockPrismaClient)),
+    $transaction: jest.fn(),
   };
   return {
     PrismaClient: jest.fn(() => mockPrismaClient),
@@ -20,113 +20,100 @@ jest.mock('@prisma/client', () => {
 
 const prisma = new PrismaClient();
 
-describe('ajouter Commande Controller', () => {
+describe('modifier Commande Controller', () => {
   let req, res;
 
   beforeEach(() => {
     req = {
+      params: {},
       body: {},
     };
     res = {
-      json: jest.fn(),
       status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
     };
 
     jest.clearAllMocks();
   });
 
-  it('devrait créer une commande avec produits associés', async () => {
+  it('devrait modifier une commande existante avec produits', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+
+    req.params.uuid = uuid;
     req.body = {
-      id_client: '123e4567-e89b-12d3-a456-426614174000',
-      statut: 'payée',
-      montant: 59.99,
-      mode_paiement: 'CB',
+      statut: 'payee',
+      montant: 150,
+      mode_paiement: 'paypal',
       produits: [
-        { id_prod: 1, quantite: 2 },
-        { id_prod: 2, quantite: 1 },
+        { id_prod: 'prod-1', quantite: 2 },
+        { id_prod: 'prod-2', quantite: 1 },
       ],
     };
 
-    const mockCommande = { id: 'cmd-uuid-1' };
-
-    prisma.commandes.create.mockResolvedValue(mockCommande);
-    prisma.produits_Commandes.createMany.mockResolvedValue();
-    prisma.commandes.findUnique.mockResolvedValue({
-      ...mockCommande,
-      produits: req.body.produits,
-    });
-
-    await ajouter(req, res);
-
-    expect(prisma.commandes.create).toHaveBeenCalledWith({
-      data: {
-        id_client: req.body.id_client,
-        statut: req.body.statut,
-        montant: req.body.montant,
-        mode_paiement: req.body.mode_paiement,
-      },
-    });
-
-    expect(prisma.produits_Commandes.createMany).toHaveBeenCalledWith({
-      data: [
-        { id_commande: mockCommande.id, id_prod: 1, quantite: 2 },
-        { id_commande: mockCommande.id, id_prod: 2, quantite: 1 },
+    const mockCommandeBefore = {
+      id: uuid,
+      produits: [],
+    };
+    const mockCommandeAfter = {
+      id: uuid,
+      statut: 'payee',
+      montant: 150,
+      mode_paiement: 'paypal',
+      produits: [
+        { id: 1, id_prod: 'prod-1', quantite: 2 },
+        { id: 2, id_prod: 'prod-2', quantite: 1 },
       ],
-    });
+    };
 
-    expect(prisma.commandes.findUnique).toHaveBeenCalledWith({
-      where: { id: mockCommande.id },
-      include: { produits: true },
-    });
+    prisma.commandes.findUnique.mockResolvedValue(mockCommandeBefore);
+    prisma.$transaction.mockImplementation(async (callback) => await callback(prisma));
+    prisma.commandes.update.mockResolvedValue({});
+    prisma.commandes.findUnique.mockResolvedValue(mockCommandeAfter);
 
-    expect(res.status).toHaveBeenCalledWith(201);
+    await modifier(req, res);
+
     expect(res.json).toHaveBeenCalledWith({
       success: true,
-      data: expect.any(Object),
-      message: 'Commande créée avec succès',
+      data: mockCommandeAfter,
+      message: 'Commande modifiée avec succès',
     });
   });
 
-  it('devrait retourner 400 si un champ obligatoire est manquant', async () => {
-    req.body = {
-      statut: 'payée',
-      mode_paiement: 'CB',
-    };
+  it('devrait retourner 400 si l\'UUID est invalide', async () => {
+    req.params.uuid = 'invalid-uuid';
 
-    await ajouter(req, res);
+    await modifier(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'id_client, statut et mode_paiement sont requis',
+      message: 'UUID invalide',
     });
   });
 
-  it('devrait retourner 400 si le UUID est invalide', async () => {
-    req.body = {
-      id_client: 'invalid-uuid',
-      statut: 'en attente',
-      mode_paiement: 'CB',
-    };
+  it('devrait retourner 404 si la commande n\'existe pas', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    req.params.uuid = uuid;
 
-    await ajouter(req, res);
+    prisma.commandes.findUnique.mockResolvedValue(null);
 
-    expect(res.status).toHaveBeenCalledWith(400);
+    await modifier(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'UUID du client invalide',
+      message: 'Commande non trouvée',
     });
   });
 
   it('devrait retourner 400 si produits n\'est pas un tableau', async () => {
-    req.body = {
-      id_client: '123e4567-e89b-12d3-a456-426614174000',
-      statut: 'en cours',
-      mode_paiement: 'CB',
-      produits: 'pas-un-tableau',
-    };
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    req.params.uuid = uuid;
+    req.body.produits = 'not-an-array';
 
-    await ajouter(req, res);
+    prisma.commandes.findUnique.mockResolvedValue({ id: uuid, produits: [] });
+
+    await modifier(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({
@@ -135,22 +122,53 @@ describe('ajouter Commande Controller', () => {
     });
   });
 
-  it('devrait retourner 500 en cas d\'erreur serveur', async () => {
+  it('devrait retourner 400 si id_client est invalide', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    req.params.uuid = uuid;
     req.body = {
-      id_client: '123e4567-e89b-12d3-a456-426614174000',
-      statut: 'payée',
-      mode_paiement: 'CB',
-      montant: 99.99,
+      id_client: 'invalid-uuid',
     };
 
-    prisma.commandes.create.mockRejectedValue(new Error('Erreur DB'));
+    prisma.commandes.findUnique.mockResolvedValue({ id: uuid, produits: [] });
 
-    await ajouter(req, res);
+    await modifier(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'UUID du client invalide',
+    });
+  });
+
+  it('devrait retourner 409 si une contrainte unique est violée', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    req.params.uuid = uuid;
+
+    prisma.commandes.findUnique.mockResolvedValue({ id: uuid, produits: [] });
+    prisma.$transaction.mockRejectedValue({ code: 'P2002' });
+
+    await modifier(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(409);
+    expect(res.json).toHaveBeenCalledWith({
+      success: false,
+      message: 'Conflit de données (contrainte unique violée)',
+    });
+  });
+
+  it('devrait retourner 500 en cas d\'erreur inconnue', async () => {
+    const uuid = '123e4567-e89b-12d3-a456-426614174000';
+    req.params.uuid = uuid;
+
+    prisma.commandes.findUnique.mockResolvedValue({ id: uuid, produits: [] });
+    prisma.$transaction.mockRejectedValue(new Error('Erreur inconnue'));
+
+    await modifier(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Erreur serveur',
+      message: 'Erreur serveur lors de la modification',
     });
   });
 });
