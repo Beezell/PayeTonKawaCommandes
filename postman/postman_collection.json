@@ -83,6 +83,23 @@
           }
         },
         {
+          "name": "Afficher les commandes d’un client",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwtToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/commandes/client/{{idClient}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["afficherparclient", "{{idClient}}"]
+            }
+          }
+        },
+        {
           "name": "Modifier une commande",
           "request": {
             "method": "PUT",

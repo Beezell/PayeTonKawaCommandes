@@ -6,12 +6,14 @@ const authorized = require('../middleware/auth');
 //controllers de commandes
 const afficherAll = require('../controllers/commandes/afficherAll');
 const afficher = require('../controllers/commandes/afficher.js');
+const afficherParClient = require('../controllers/commandes/afficherparclient');
 const ajouter = require('../controllers/commandes/ajouter');
 const supprimer = require('../controllers/commandes/supprimer');
 const modifier = require('../controllers/commandes/modifier');
 
 router.get('/afficherAll', authorized, afficherAll);
 router.get('/afficher/:uuid', authorized , afficher);
+router.get('/afficherparclient/:idClient', authorized, afficherParClient);
 router.post('/ajouter', authorized, ajouter);
 router.put('/modifier/:uuid', authorized, modifier);
 router.delete('/supprimer/:uuid', authorized, supprimer);
@@ -222,6 +224,121 @@ router.delete('/supprimer/:uuid', authorized, supprimer);
  *                 message:
  *                   type: string
  *                   example: "Commande non trouvée"
+ *       500:
+ *         description: Erreur serveur interne
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Erreur serveur"
+ */
+
+/**
+ * @swagger
+ * /commandes/client/{idClient}:
+ *   get:
+ *     summary: Afficher toutes les commandes d’un client
+ *     description: Récupère l’ensemble des commandes associées à un client spécifique, en utilisant son identifiant UUID. Chaque commande inclut les produits commandés.
+ *     tags:
+ *       - Commandes
+ *     parameters:
+ *       - in: path
+ *         name: idClient
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: L'identifiant unique du client
+ *         example: 550e8400-e29b-41d4-a716-446655440000
+ *     responses:
+ *       200:
+ *         description: Commandes trouvées avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       id:
+ *                         type: string
+ *                         format: uuid
+ *                         example: 32db04f8-dd06-49bb-9215-613a18b3d20b
+ *                       created_at:
+ *                         type: string
+ *                         format: date-time
+ *                         example: "2025-06-04T07:00:54.299Z"
+ *                       id_client:
+ *                         type: string
+ *                         format: uuid
+ *                         example: 550e8400-e29b-41d4-a716-446655440000
+ *                       statut:
+ *                         type: string
+ *                         example: "en_attente"
+ *                       montant:
+ *                         type: number
+ *                         format: float
+ *                         example: 120.5
+ *                       mode_paiement:
+ *                         type: string
+ *                         example: "carte"
+ *                       produits:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             id:
+ *                               type: integer
+ *                               example: 1
+ *                             id_commande:
+ *                               type: string
+ *                               format: uuid
+ *                               example: 32db04f8-dd06-49bb-9215-613a18b3d20b
+ *                             id_prod:
+ *                               type: string
+ *                               format: uuid
+ *                               example: 999e8888-e89b-12d3-a456-426614174003
+ *                             quantite:
+ *                               type: integer
+ *                               example: 2
+ *       400:
+ *         description: UUID client invalide
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "UUID client invalide"
+ *       404:
+ *         description: Aucune commande trouvée pour ce client
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Aucune commande trouvée pour ce client"
  *       500:
  *         description: Erreur serveur interne
  *         content:
