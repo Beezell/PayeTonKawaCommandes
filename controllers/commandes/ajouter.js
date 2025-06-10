@@ -3,7 +3,6 @@ const prisma = new PrismaClient();
 
 // Ajouter une commande
 const ajouter = async (req, res) => {
-    console.log("Ajouter une commande ", req.body);
     
     try {
         const { id_client, statut, montant, mode_paiement, produits } = req.body;

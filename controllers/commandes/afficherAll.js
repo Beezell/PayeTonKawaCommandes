@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 // Afficher toutes les commandes avec leurs produits
 const afficherAll = async (req, res) => {
-  console.log("Afficher toutes les commandes avec jointures", req);
+
   try {
     const commandes = await prisma.commandes.findMany({
       include: {
