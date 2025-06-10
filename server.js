@@ -19,6 +19,15 @@ app.use("/api/commandes", require("./routes/commandes"));
 
 setupSwagger(app);
 
+// Middleware de gestion des erreurs
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: 'Une erreur est survenue sur le serveur'
+  });
+});
+
 app.use('*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -30,16 +39,16 @@ app.listen(PORT, () => {
   console.log(`Serveur démarré sur le port ${PORT}`);
   console.log(`API disponible sur http://localhost:${PORT}/api`);
 
-  const jwt = require('jsonwebtoken');
+//   const jwt = require('jsonwebtoken');
 
-  //temporaire
-  const token = jwt.sign(
-    { username: 'testuser' },
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' }
-  );
+//   //temporaire
+//   const token = jwt.sign(
+//     { username: 'testuser' },
+//     process.env.JWT_SECRET,
+//     { expiresIn: '1h' }
+//   );
 
-  console.log(token);
+//   console.log(token);
 
 
 });
