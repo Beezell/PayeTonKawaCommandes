@@ -4,11 +4,9 @@ services:
   api:
     build: .
     ports:
-      - "3000:3000"
+      - "3002:3000"
     environment:
       - NODE_ENV=production
-      # Ajoutez ici vos variables d'environnement pour la base de données
-      # - DATABASE_URL=your_database_url
       - RABBITMQ_URL=amqp://rabbitmq:5672
     volumes:
       - .:/app
