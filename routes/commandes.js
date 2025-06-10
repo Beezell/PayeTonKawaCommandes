@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const authorized = require('../middleware/auth');
+const validateUUID = require('../middleware/uuidValidation.js');
 
 //controllers de commandes
 const afficherAll = require('../controllers/commandes/afficherAll');
@@ -12,11 +13,11 @@ const supprimer = require('../controllers/commandes/supprimer');
 const modifier = require('../controllers/commandes/modifier');
 
 router.get('/afficherAll', authorized, afficherAll);
-router.get('/afficher/:uuid', authorized , afficher);
-router.get('/afficherparclient/:idClient', authorized, afficherParClient);
+router.get('/afficher/:uuid', authorized, validateUUID, afficher);
+router.get('/afficherparclient/:idClient', validateUUID, authorized, afficherParClient);
 router.post('/ajouter', authorized, ajouter);
-router.put('/modifier/:uuid', authorized, modifier);
-router.delete('/supprimer/:uuid', authorized, supprimer);
+router.put('/modifier/:uuid', authorized, validateUUID, modifier);
+router.delete('/supprimer/:uuid', authorized, validateUUID, supprimer);
 
 /**
  * @swagger

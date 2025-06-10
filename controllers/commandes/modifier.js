@@ -6,7 +6,6 @@ const modifier = async (req, res) => {
     try {
         const { uuid } = req.params;
         const { id_client, statut, montant, mode_paiement, produits } = req.body;
-        console.log("Modifier la commande:", uuid, req.body);
         
         // Validation de l'UUID
         const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

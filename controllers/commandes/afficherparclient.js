@@ -5,16 +5,6 @@ const prisma = new PrismaClient();
 const afficherParClient = async (req, res) => {
     try {
         const { idClient } = req.params;
-        console.log("ID du client à afficher:", idClient);
-
-        // Validation de l'UUID
-        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-        if (!uuidRegex.test(idClient)) {
-            return res.status(400).json({
-                success: false,
-                message: 'UUID client invalide'
-            });
-        }
 
         const commandes = await prisma.commandes.findMany({
             where: {
