@@ -12,8 +12,8 @@ services:
       - DEBUG=*
       - PORT=3002
     volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./:/app
+      - /app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy

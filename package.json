@@ -2,7 +2,7 @@
   "name": "payetonkawa",
   "version": "1.0.0",
   "description": "Microservice pour la gestion des commandes",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node server.js",
     "dev": "node scripts/start-dev.js",
