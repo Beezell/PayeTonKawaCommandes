@@ -3,9 +3,11 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'api-commandes'
+  - job_name: 'api-produits'
     static_configs:
-      - targets: ['api-commandes:3002']
+      - targets: 
+        - 'api-produits:3002'
+        - 'host.docker.internal:3002'
     metrics_path: '/metrics'
 
   - job_name: 'rabbitmq'
