@@ -17,14 +17,14 @@ class CommandeService {
         }
     }
 
-    async getCommandeById(uuid) {
+    async getCommandeById(uuid_commande) {
         try {
-            if (!this.isValidUUID(uuid)) {
+            if (!this.isValidUUID(uuid_commande)) {
                 throw new Error('UUID invalide');
             }
 
             const commande = await prisma.commandes.findUnique({
-                where: { id: uuid },
+                where: { uuid: uuid_commande },
                 include: {
                     produits: true
                 }
@@ -40,14 +40,14 @@ class CommandeService {
         }
     }
 
-    async getCommandesByClientId(clientUuid) {
+    async getCommandesByClientId(uuid_client) {
         try {
-            if (!this.isValidUUID(clientUuid)) {
+            if (!this.isValidUUID(uuid_client)) {
                 throw new Error('UUID du client invalide');
             }
 
             return await prisma.commandes.findMany({
-                where: { id_client: clientUuid },
+                where: { uuid_client: uuid_client },
                 include: {
                     produits: true
                 },
@@ -64,13 +64,13 @@ class CommandeService {
         try {
             const { produits, ...commandeInfo } = commandeData;
 
-            if (!this.isValidUUID(commandeInfo.id_client)) {
+            if (!this.isValidUUID(commandeInfo.uuid_client)) {
                 throw new Error('UUID du client invalide');
             }
 
             if (produits) {
                 for (const produit of produits) {
-                    if (!this.isValidUUID(produit.id_prod)) {
+                    if (!this.isValidUUID(produit.uuid_produit)) {
                         throw new Error('UUID de produit invalide');
                     }
                 }
@@ -81,7 +81,7 @@ class CommandeService {
                     ...commandeInfo,
                     produits: {
                         create: produits.map(produit => ({
-                            id_prod: produit.id_prod,
+                            uuid_produit: produit.uuid_produit,
                             quantite: parseInt(produit.quantite) || 1
                         }))
                     }
@@ -95,36 +95,36 @@ class CommandeService {
         }
     }
 
-    async updateCommande(uuid, commandeData) {
+    async updateCommande(uuid_commande, commandeData) {
         try {
-            if (!this.isValidUUID(uuid)) {
+            if (!this.isValidUUID(uuid_commande)) {
                 throw new Error('UUID invalide');
             }
 
             const { produits, ...commandeInfo } = commandeData;
 
-            if (commandeInfo.id_client && !this.isValidUUID(commandeInfo.id_client)) {
+            if (commandeInfo.uuid_client && !this.isValidUUID(commandeInfo.uuid_client)) {
                 throw new Error('UUID du client invalide');
             }
 
             if (produits) {
                 for (const produit of produits) {
-                    if (!this.isValidUUID(produit.id_prod)) {
+                    if (!this.isValidUUID(produit.uuid_produit)) {
                         throw new Error('UUID de produit invalide');
                     }
                 }
             }
 
-            await this.getCommandeById(uuid);
+            await this.getCommandeById(uuid_commande);
 
             return await prisma.commandes.update({
-                where: { id: uuid },
+                where: { uuid: uuid_commande },
                 data: {
                     ...commandeInfo,
                     produits: produits ? {
                         deleteMany: {},
                         create: produits.map(produit => ({
-                            id_prod: produit.id_prod,
+                            uuid_produit: produit.uuid_produit,
                             quantite: parseInt(produit.quantite) || 1
                         }))
                     } : undefined
@@ -138,16 +138,16 @@ class CommandeService {
         }
     }
 
-    async deleteCommande(uuid) {
+    async deleteCommande(uuid_commande) {
         try {
-            if (!this.isValidUUID(uuid)) {
+            if (!this.isValidUUID(uuid_commande)) {
                 throw new Error('UUID invalide');
             }
 
-            await this.getCommandeById(uuid);
+            await this.getCommandeById(uuid_commande);
 
             await prisma.commandes.delete({
-                where: { id: uuid }
+                where: { uuid: uuid_commande }
             });
 
             return true;
@@ -157,13 +157,13 @@ class CommandeService {
     }
 
     async validateCommandeData(commandeData) {
-        const { id_client, statut, mode_paiement, produits } = commandeData;
+        const { uuid_client, statut, mode_paiement, produits } = commandeData;
 
-        if (!id_client || !statut || !mode_paiement) {
-            throw new Error('id_client, statut et mode_paiement sont requis');
+        if (!uuid_client || !statut || !mode_paiement) {
+            throw new Error('uuid_client, statut et mode_paiement sont requis');
         }
 
-        if (!this.isValidUUID(id_client)) {
+        if (!this.isValidUUID(uuid_client)) {
             throw new Error('UUID du client invalide');
         }
 
@@ -172,7 +172,7 @@ class CommandeService {
         }
 
         for (const produit of produits) {
-            if (!produit.id_prod || !this.isValidUUID(produit.id_prod)) {
+            if (!produit.uuid_produit || !this.isValidUUID(produit.uuid_produit)) {
                 throw new Error('UUID de produit invalide');
             }
             if (!produit.quantite || parseInt(produit.quantite) <= 0) {

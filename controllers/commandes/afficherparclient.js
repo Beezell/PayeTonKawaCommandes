@@ -2,17 +2,9 @@ const commandeService = require('../../services/CommandeService');
 
 const afficherCommandesParClient = async (req, res) => {
     try {
-        const { idClient } = req.params;
-
-        const commandes = await prisma.commandes.findMany({
-            where: {
-                id_client: idClient
-            },
-            include: {
-                produits: true  // inclure les produits associés à chaque commande
-            }
-        });
-
+        const { uuid_client } = req.params;
+        const commandes = await commandeService.getCommandesByClientId(uuid_client);
+        
         if (commandes.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -25,7 +17,7 @@ const afficherCommandesParClient = async (req, res) => {
             data: commandes
         });
     } catch (error) {
-        res.status(404).json({
+        res.status(error.message.includes('UUID invalide') ? 400 : 404).json({
             success: false,
             message: error.message
         });

@@ -2,11 +2,11 @@ const commandeService = require('../../services/CommandeService');
 
 const modifierCommande = async (req, res) => {
     try {
-        const { uuid } = req.params;
+        const { uuid_commande } = req.params;
         const commandeData = req.body;
 
         await commandeService.validateCommandeData(commandeData);
-        const commandeModifiee = await commandeService.updateCommande(uuid, commandeData);
+        const commandeModifiee = await commandeService.updateCommande(uuid_commande, commandeData);
 
         res.json({
             success: true,
