@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const authorized = require('../middleware/auth');
+const { authorized, adminOnly, authorizedRole } = require("../middleware/auth");
 const validateUUID = require('../middleware/uuidValidation.js');
 
 //controllers de commandes
@@ -12,12 +12,12 @@ const ajouter = require('../controllers/commandes/ajouter');
 const supprimer = require('../controllers/commandes/supprimer');
 const modifier = require('../controllers/commandes/modifier');
 
-router.get('/afficherAll', authorized, afficherAll);
+router.get('/afficherAll', adminOnly, afficherAll);
 router.get('/afficher/:uuid_commande', authorized, validateUUID, afficher);
 router.get('/afficherparclient/:uuid_client', validateUUID, authorized, afficherParClient);
 router.post('/ajouter', authorized, ajouter);
-router.put('/modifier/:uuid_commande', authorized, validateUUID, modifier);
-router.delete('/supprimer/:uuid_commande', authorized, validateUUID, supprimer);
+router.put('/modifier/:uuid_commande', adminOnly, validateUUID, modifier);
+router.delete('/supprimer/:uuid_commande', adminOnly, validateUUID, supprimer);
 
 /**
  * @swagger

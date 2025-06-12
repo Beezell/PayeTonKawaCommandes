@@ -1,48 +1,46 @@
 const jwt = require('jsonwebtoken');
 
 const authorized = (req, res, next) => {
-    try {
-        const authHeader = req.headers['authorization'];
-        
-        if (!authHeader) {
-            return res.status(401).json({
-                success: false,
-                message: 'Token d\'authentification manquant'
-            });
-        }
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ success: false, message: "Token manquant" });
 
-        const token = authHeader.split(' ')[1];
-        
-        if (!token) {
-            return res.status(401).json({
-                success: false,
-                message: 'Format de token invalide'
-            });
-        }
-
-        jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-            if (err) {
-                if (err.name === 'TokenExpiredError') {
-                    return res.status(401).json({
-                        success: false,
-                        message: 'Token expiré'
-                    });
-                }
-                return res.status(403).json({
-                    success: false,
-                    message: 'Token invalide'
-                });
-            }
-            req.user = user;
-            next();
-        });
-    } catch (error) {
-        console.error('Erreur d\'authentification:', error);
-        return res.status(500).json({
-            success: false,
-            message: 'Erreur lors de l\'authentification'
-        });
-    }
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ success: false, message: "Token invalide" });
+    req.user = user;
+    next();
+  });
 };
 
-module.exports = authorized;
+// Middleware qui vérifie aussi le rôle de l'utilisateur
+const authorizedRole = (allowedRoles = []) => {
+  return (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+      return res.status(401).json({ success: false, message: "Token manquant" });
+    }
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(403).json({ success: false, message: "Token invalideeee" });
+      }
+      
+      // Vérifier si le rôle de l'utilisateur est dans la liste des rôles autorisés
+      if (!allowedRoles.includes(user.role)) {
+        return res.status(403).json({ 
+          success: false, 
+          message: "Accès refusé : privilèges insuffisants" 
+        });
+      }
+      
+      req.user = user;
+      next();
+    });
+  };
+};
+
+const adminOnly = authorizedRole(['Admin']);
+
+module.exports = { authorized, authorizedRole, adminOnly };
