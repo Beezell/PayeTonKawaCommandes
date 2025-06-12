@@ -40,14 +40,14 @@ class CommandeService {
         }
     }
 
-    async getCommandesByClientId(uuid_client) {
+    async getCommandesByClientId(uuid) {
         try {
-            if (!this.isValidUUID(uuid_client)) {
+            if (!this.isValidUUID(uuid)) {
                 throw new Error('UUID du client invalide');
             }
 
             return await prisma.commandes.findMany({
-                where: { uuid_client: uuid_client },
+                where: { id_client: uuid },
                 include: {
                     produits: true
                 },
