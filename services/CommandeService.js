@@ -40,14 +40,14 @@ class CommandeService {
         }
     }
 
-    async getCommandesByClientId(uuid_client) {
+    async getCommandesByClientId(uuid) {
         try {
-            if (!this.isValidUUID(uuid_client)) {
+            if (!this.isValidUUID(uuid)) {
                 throw new Error('UUID du client invalide');
             }
 
             return await prisma.commandes.findMany({
-                where: { uuid_client: uuid_client },
+                where: { id_client: uuid },
                 include: {
                     produits: true
                 },
@@ -75,21 +75,23 @@ class CommandeService {
                     }
                 }
             }
-            
+        
             return await prisma.commandes.create({
                 data: {
-                    ...commandeInfo,
-                    produits: {
-                        create: produits.map(produit => ({
-                            uuid_produit: produit.uuid_produit,
-                            quantite: parseInt(produit.quantite) || 1
-                        }))
-                    }
+                  mode_paiement: commandeInfo.mode_paiement,
+                  statut: commandeInfo.statut,
+                  id_client: commandeInfo.uuid_client,
+                  produits: {
+                    create: produits.map(produit => ({
+                      id_prod: produit.uuid_produit,
+                      quantite: parseInt(produit.quantite) || 1
+                    }))
+                  }
                 },
                 include: {
-                    produits: true
+                  produits: true
                 }
-            });
+              });              
         } catch (error) {
             throw new Error(`Erreur lors de la création de la commande: ${error.message}`);
         }

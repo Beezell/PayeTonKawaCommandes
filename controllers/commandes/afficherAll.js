@@ -19,4 +19,4 @@ const afficherAll = async (req, res) => {
   }
 };
 
-module.exports = afficherToutesCommandes;
+module.exports = afficherAll;

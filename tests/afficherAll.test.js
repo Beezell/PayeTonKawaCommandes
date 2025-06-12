@@ -1,24 +1,13 @@
-const afficherAll = require('../controllers/commandes/afficherAll');
-const { PrismaClient } = require('@prisma/client');
+const afficherAll = require("../controllers/commandes/afficherAll");
+const commandeService = require("../services/CommandeService");
 
-jest.mock('@prisma/client', () => {
-  const mockPrismaClient = {
-    commandes: {
-      findMany: jest.fn(),
-    },
-  };
-  return {
-    PrismaClient: jest.fn(() => mockPrismaClient),
-  };
-});
+jest.mock("../services/CommandeService");
 
-const prisma = new PrismaClient();
-
-describe('afficherAll Commandes Controller', () => {
+describe("afficherAll Commandes Controller", () => {
   let req, res;
 
   beforeEach(() => {
-    req = {}; 
+    req = {};
     res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
@@ -27,31 +16,28 @@ describe('afficherAll Commandes Controller', () => {
     jest.clearAllMocks();
   });
 
-  it('devrait retourner toutes les commandes avec leurs produits', async () => {
+  it("devrait retourner toutes les commandes avec leurs produits", async () => {
     const mockCommandes = [
       {
-        id: 'commande-1',
+        uuid: "commande-1",
         created_at: new Date(),
         produits: [
-          { id: 1, nom: 'Produit A', prix: 10 },
-          { id: 2, nom: 'Produit B', prix: 20 },
+          { id: 1, nom: "Produit A", prix: 10 },
+          { id: 2, nom: "Produit B", prix: 20 },
         ],
       },
       {
-        id: 'commande-2',
+        uuid: "commande-2",
         created_at: new Date(),
         produits: [],
       },
     ];
 
-    prisma.commandes.findMany.mockResolvedValue(mockCommandes);
+    commandeService.getAllCommandes.mockResolvedValue(mockCommandes);
 
     await afficherAll(req, res);
 
-    expect(prisma.commandes.findMany).toHaveBeenCalledWith({
-      include: { produits: true },
-      orderBy: { created_at: 'desc' },
-    });
+    expect(commandeService.getAllCommandes).toHaveBeenCalled();
 
     expect(res.json).toHaveBeenCalledWith({
       success: true,
@@ -61,15 +47,15 @@ describe('afficherAll Commandes Controller', () => {
   });
 
   it("devrait retourner 500 en cas d'erreur serveur", async () => {
-    const mockError = new Error('DB error');
-    prisma.commandes.findMany.mockRejectedValue(mockError);
+    const mockError = new Error("Erreur serveur");
+    commandeService.getAllCommandes.mockRejectedValue(mockError);
 
     await afficherAll(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({
       success: false,
-      message: 'Erreur serveur',
+      message: "Erreur serveur",
     });
   });
 });
