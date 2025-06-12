@@ -75,21 +75,23 @@ class CommandeService {
                     }
                 }
             }
-            
+        
             return await prisma.commandes.create({
                 data: {
-                    ...commandeInfo,
-                    produits: {
-                        create: produits.map(produit => ({
-                            uuid_produit: produit.uuid_produit,
-                            quantite: parseInt(produit.quantite) || 1
-                        }))
-                    }
+                  mode_paiement: commandeInfo.mode_paiement,
+                  statut: commandeInfo.statut,
+                  id_client: commandeInfo.uuid_client,
+                  produits: {
+                    create: produits.map(produit => ({
+                      id_prod: produit.uuid_produit,
+                      quantite: parseInt(produit.quantite) || 1
+                    }))
+                  }
                 },
                 include: {
-                    produits: true
+                  produits: true
                 }
-            });
+              });              
         } catch (error) {
             throw new Error(`Erreur lors de la création de la commande: ${error.message}`);
         }
