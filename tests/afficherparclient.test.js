@@ -1,7 +1,6 @@
 const afficherParClient = require('../controllers/commandes/afficherparclient');
 const { PrismaClient } = require('@prisma/client');
 
-// Mock Prisma
 jest.mock('@prisma/client', () => {
   const mockPrismaClient = {
     commandes: {

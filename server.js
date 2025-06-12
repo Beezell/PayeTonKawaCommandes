@@ -1,4 +1,3 @@
-// Configuration globale pour sérialiser les BigInt
 BigInt.prototype.toJSON = function() {
   return this.toString();
 };
@@ -32,7 +31,6 @@ app.listen(PORT, () => {
 
   const jwt = require('jsonwebtoken');
 
-  //temporaire
   const token = jwt.sign(
     { username: 'testuser' },
     process.env.JWT_SECRET,

@@ -1,7 +1,6 @@
 const ajouter = require('../controllers/commandes/ajouter');
 const { PrismaClient } = require('@prisma/client');
 
-// Mock de Prisma
 jest.mock('@prisma/client', () => {
   const mockPrismaClient = {
     commandes: {

@@ -1,7 +1,6 @@
 const afficherAll = require('../controllers/commandes/afficherAll');
 const { PrismaClient } = require('@prisma/client');
 
-// Mock Prisma
 jest.mock('@prisma/client', () => {
   const mockPrismaClient = {
     commandes: {
@@ -19,7 +18,7 @@ describe('afficherAll Commandes Controller', () => {
   let req, res;
 
   beforeEach(() => {
-    req = {}; // pas besoin de params ici
+    req = {}; 
     res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
