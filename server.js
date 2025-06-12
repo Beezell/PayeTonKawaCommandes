@@ -1,3 +1,7 @@
+BigInt.prototype.toJSON = function() {
+  return this.toString();
+};
+
 const express = require('express');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -66,7 +70,6 @@ const server = app.listen(config.server.port, async () => {
 
       const jwt = require('jsonwebtoken');
 
-  //temporaire
   const token = jwt.sign(
     { username: 'testuser' },
     process.env.JWT_SECRET,

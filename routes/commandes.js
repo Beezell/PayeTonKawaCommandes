@@ -13,11 +13,11 @@ const supprimer = require('../controllers/commandes/supprimer');
 const modifier = require('../controllers/commandes/modifier');
 
 router.get('/afficherAll', authorized, afficherAll);
-router.get('/afficher/:uuid', authorized, validateUUID, afficher);
-router.get('/afficherparclient/:idClient', validateUUID, authorized, afficherParClient);
+router.get('/afficher/:uuid_commande', authorized, validateUUID, afficher);
+router.get('/afficherparclient/:uuid_client', validateUUID, authorized, afficherParClient);
 router.post('/ajouter', authorized, ajouter);
-router.put('/modifier/:uuid', authorized, validateUUID, modifier);
-router.delete('/supprimer/:uuid', authorized, validateUUID, supprimer);
+router.put('/modifier/:uuid_commande', authorized, validateUUID, modifier);
+router.delete('/supprimer/:uuid_commande', authorized, validateUUID, supprimer);
 
 /**
  * @swagger
@@ -244,8 +244,8 @@ router.delete('/supprimer/:uuid', authorized, validateUUID, supprimer);
  * @swagger
  * /commandes/client/{idClient}:
  *   get:
- *     summary: Afficher toutes les commandes d’un client
- *     description: Récupère l’ensemble des commandes associées à un client spécifique, en utilisant son identifiant UUID. Chaque commande inclut les produits commandés.
+ *     summary: Afficher toutes les commandes d'un client
+ *     description: Récupère l'ensemble des commandes associées à un client spécifique, en utilisant son identifiant UUID. Chaque commande inclut les produits commandés.
  *     tags:
  *       - Commandes
  *     parameters:

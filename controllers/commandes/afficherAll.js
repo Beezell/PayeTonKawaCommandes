@@ -1,18 +1,9 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const commandeService = require('../../services/CommandeService');
 
-// Afficher toutes les commandes avec leurs produits
 const afficherAll = async (req, res) => {
 
   try {
-    const commandes = await prisma.commandes.findMany({
-      include: {
-        produits: true      // on affiche aussi les produits associés à chaque commande
-      },
-      orderBy: {
-        created_at: 'desc'
-      }
-    });
+    const commandes = await commandeService.getAllCommandes();
     
     res.json({
       success: true,
@@ -23,9 +14,9 @@ const afficherAll = async (req, res) => {
     console.error('Erreur:', error);
     res.status(500).json({
       success: false,
-      message: 'Erreur serveur'
+      message: error.message
     });
   }
 };
 
-module.exports = afficherAll;
+module.exports = afficherToutesCommandes;

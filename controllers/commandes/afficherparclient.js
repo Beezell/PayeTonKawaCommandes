@@ -1,20 +1,10 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const commandeService = require('../../services/CommandeService');
 
-// Afficher toutes les commandes d’un client par son ID
-const afficherParClient = async (req, res) => {
+const afficherCommandesParClient = async (req, res) => {
     try {
-        const { idClient } = req.params;
-
-        const commandes = await prisma.commandes.findMany({
-            where: {
-                id_client: idClient
-            },
-            include: {
-                produits: true  // inclure les produits associés à chaque commande
-            }
-        });
-
+        const { uuid_client } = req.params;
+        const commandes = await commandeService.getCommandesByClientId(uuid_client);
+        
         if (commandes.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -27,12 +17,11 @@ const afficherParClient = async (req, res) => {
             data: commandes
         });
     } catch (error) {
-        console.error('Erreur:', error);
-        res.status(500).json({
+        res.status(error.message.includes('UUID invalide') ? 400 : 404).json({
             success: false,
-            message: 'Erreur serveur'
+            message: error.message
         });
     }
 };
 
-module.exports = afficherParClient;
+module.exports = afficherCommandesParClient;
