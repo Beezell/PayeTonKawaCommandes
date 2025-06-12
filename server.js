@@ -4,32 +4,61 @@ BigInt.prototype.toJSON = function() {
 
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const setupSwagger = require('./swagger');
 const { PrismaClient } = require('@prisma/client');
+const { rabbitmq } = require('./services/rabbitmq');
+const { metricsMiddleware, metricsRoute } = require('./middleware/metrics');
+const errorHandler = require('./middleware/error.middleware');
+const config = require('./config');
 require('dotenv').config();
 
 const app = express();
 const prisma = new PrismaClient();
-const PORT = process.env.PORT || 3000;
 
+const limiter = rateLimit({
+    windowMs: config.rateLimit.windowMs,
+    max: config.rateLimit.max,
+    message: {
+        success: false,
+        message: 'Trop de requêtes depuis cette IP, réessayez dans 15 minutes.'
+    },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+app.use(metricsMiddleware);
+app.use(limiter);
 app.use(cors());
 app.use(express.json());
 app.use("/api/commandes", require("./routes/commandes"));
 
+app.get('/metrics', metricsRoute);
+
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 setupSwagger(app);
 
 app.use('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route non trouvée'
-  });
+    res.status(404).json({
+        success: false,
+        message: 'Route non trouvée'
+    });
 });
 
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`);
-  console.log(`API disponible sur http://localhost:${PORT}/api`);
+app.use(errorHandler);
 
-  const jwt = require('jsonwebtoken');
+
+
+const server = app.listen(config.server.port, async () => {
+    console.log(`Serveur démarré sur le port ${config.server.port}`);
+    console.log(`API disponible sur http://localhost:${config.server.port}/api`);
+    console.log('Protection DDoS activée (100 req/15min par IP)');
+    console.log('Métriques Prometheus disponibles sur /metrics');
+
+      const jwt = require('jsonwebtoken');
 
   const token = jwt.sign(
     { username: 'testuser' },
@@ -38,13 +67,22 @@ app.listen(PORT, () => {
   );
 
   console.log(token);
+});
 
-
+process.on('SIGTERM', async () => {
+    console.log('Arrêt du serveur...');
+    server.close(async () => {
+        await prisma.$disconnect();
+        await rabbitmq.close();
+        process.exit(0);
+    });
 });
 
 process.on('SIGINT', async () => {
-  console.log('Arrêt du serveur...');
-  await prisma.$disconnect();
-  process.exit(0);
+    console.log('Arrêt du serveur...');
+    server.close(async () => {
+        await prisma.$disconnect();
+        await rabbitmq.close();
+        process.exit(0);
+    });
 });
-

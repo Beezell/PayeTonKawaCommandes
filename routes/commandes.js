@@ -2,20 +2,22 @@ const express = require('express');
 const router = express.Router();
 
 const authorized = require('../middleware/auth');
+const validateUUID = require('../middleware/uuidValidation.js');
 
-const afficherToutesCommandes = require('../controllers/commandes/afficherAll');
-const afficherCommande = require('../controllers/commandes/afficher.js');
-const afficherCommandesParClient = require('../controllers/commandes/afficherparclient');
-const ajouterCommande = require('../controllers/commandes/ajouter');
-const supprimerCommande = require('../controllers/commandes/supprimer');
-const modifierCommande = require('../controllers/commandes/modifier');
+//controllers de commandes
+const afficherAll = require('../controllers/commandes/afficherAll');
+const afficher = require('../controllers/commandes/afficher.js');
+const afficherParClient = require('../controllers/commandes/afficherparclient');
+const ajouter = require('../controllers/commandes/ajouter');
+const supprimer = require('../controllers/commandes/supprimer');
+const modifier = require('../controllers/commandes/modifier');
 
-router.get('/', authorized, afficherToutesCommandes);
-router.get('/:uuid', authorized, afficherCommande);
-router.get('/client/:uuid_client', authorized, afficherCommandesParClient);
-router.post('/', authorized, ajouterCommande);
-router.put('/:uuid', authorized, modifierCommande);
-router.delete('/:uuid', authorized, supprimerCommande);
+router.get('/afficherAll', authorized, afficherAll);
+router.get('/afficher/:uuid', authorized, validateUUID, afficher);
+router.get('/afficherparclient/:idClient', validateUUID, authorized, afficherParClient);
+router.post('/ajouter', authorized, ajouter);
+router.put('/modifier/:uuid', authorized, validateUUID, modifier);
+router.delete('/supprimer/:uuid', authorized, validateUUID, supprimer);
 
 /**
  * @swagger

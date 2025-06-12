@@ -1,33 +1,81 @@
 version: '3.8'
 
 services:
-  api:
+  api-commandes:
     build: .
     ports:
-      - "3000:3000"
+      - "3002:3002"
     environment:
-      - NODE_ENV=production
-      # Ajoutez ici vos variables d'environnement pour la base de données
-      # - DATABASE_URL=your_database_url
-      - RABBITMQ_URL=amqp://rabbitmq:5672
+      - NODE_ENV=development
+      - DATABASE_URL=process.env.DATABASE_URL
+      - RABBITMQ_URL=amqp://admin:admin@rabbitmq:4002
+      - DEBUG=*
+      - PORT=3002
     volumes:
-      - .:/app
+      - ./:/app
       - /app/node_modules
-    restart: unless-stopped
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3002/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    labels:
+      - "prometheus.io/scrape=true"
+      - "prometheus.io/port=3002"
+      - "prometheus.io/path=/metrics"
 
   rabbitmq:
-    image: rabbitmq:3-management
+    image: rabbitmq:3-management-alpine
+    hostname: rabbitmq
     ports:
-      - "5672:5672"  
-      - "15672:15672"
+      - "4002:5672"   
+      - "15674:15672" 
     environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management listener [{port,15672},{ssl,false}]
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "prometheus.io/scrape=true"
+      - "prometheus.io/port=15692"
+      - "prometheus.io/path=/metrics"
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "6002:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - app-network
     restart: unless-stopped
 
+networks:
+  app-network:
+    driver: bridge
+
 volumes:
-  rabbitmq_data: 
+  rabbitmq_data:
+  prometheus_data:

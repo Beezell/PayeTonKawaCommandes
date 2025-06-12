@@ -1,7 +1,8 @@
 const commandeService = require('../../services/CommandeService');
 
-const afficherToutesCommandes = async (req, res) => {
-  console.log("Afficher toutes les commandes avec jointures", req);
+// Afficher toutes les commandes avec leurs produits
+const afficherAll = async (req, res) => {
+
   try {
     const commandes = await commandeService.getAllCommandes();
     
