@@ -1,6 +1,5 @@
 const commandeService = require('../../services/CommandeService');
 
-// Afficher toutes les commandes avec leurs produits
 const afficherAll = async (req, res) => {
 
   try {
