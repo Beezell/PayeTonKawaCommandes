@@ -1,4 +1,4 @@
-name: CI_tests_Build_Clients
+name: CI_tests_Build_Commandes
 
 on:
   push:
