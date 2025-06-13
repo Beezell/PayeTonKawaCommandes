@@ -1,11 +1,14 @@
 const commandeService = require('../../services/CommandeService');
+const rabbitmq = require('../../services/rabbitmqService');
 
 const supprimerCommande = async (req, res) => {
     try {
         const { uuid_commande } = req.params;
         await commandeService.deleteCommande(uuid_commande);
-        
-        res.json({
+
+        await rabbitmq.publishOrderDeleted(uuid_commande);
+
+        res.status(200).json({
             success: true,
             message: 'Commande supprimée avec succès'
         });
