@@ -6,6 +6,8 @@ const modifierCommande = async (req, res) => {
         const { uuid_commande } = req.params;
         const commandeData = req.body;
 
+        await commandeService.validateCommandeData(commandeData);
+
         const commande = await commandeService.updateCommande(uuid_commande, commandeData);
 
         if (!commande) {

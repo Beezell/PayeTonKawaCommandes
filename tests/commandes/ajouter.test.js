@@ -1,46 +1,48 @@
-const ajouterCommande = require("../controllers/commandes/ajouter");
-const commandeService = require("../services/CommandeService");
+const ajouter = require("../../controllers/commandes/ajouter");
+const commandeService = require("../../services/CommandeService");
+const rabbitmq = require("../../services/rabbitmqService");
 
-jest.mock("../services/CommandeService");
+jest.mock("../../services/CommandeService");
+jest.mock("../../services/rabbitmqService");
 
 describe("ajouter - Contrôleur de commande", () => {
   let req, res;
 
   beforeEach(() => {
-    req = { body: {} };
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+    req = {
+      body: {
+        uuid_client: "550e8400-e29b-41d4-a716-446655440000",
+        produits: [
+          { uuid_produit: "prod1", quantite: 2 },
+          { uuid_produit: "prod2", quantite: 1 },
+        ],
+        mode_paiement: "carte",
+        statut: "en_attente",
+      },
     };
+    res = {
+      json: jest.fn(),
+      status: jest.fn().mockReturnThis(),
+    };
+
     jest.clearAllMocks();
   });
 
   it("crée une commande avec produits avec succès", async () => {
-    req.body = {
-      id_client: "123e4567-e89b-12d3-a456-426614174000",
-      statut: "payée",
-      montant: 59.99,
-      mode_paiement: "CB",
-      produits: [
-        { id_prod: 1, quantite: 2 },
-        { id_prod: 2, quantite: 1 },
-      ],
-    };
-
     const mockCommandeCreee = {
-      id: "cmd-uuid-1",
+      uuid: "new-commande-uuid",
       ...req.body,
     };
 
-    commandeService.validateCommandeData.mockResolvedValue(); // Pas de return, juste validation OK
+    commandeService.validateCommandeData.mockResolvedValue(true);
     commandeService.createCommande.mockResolvedValue(mockCommandeCreee);
+    rabbitmq.publishOrderCreated.mockResolvedValue(true);
 
-    await ajouterCommande(req, res);
+    await ajouter(req, res);
 
     expect(commandeService.validateCommandeData).toHaveBeenCalledWith(req.body);
     expect(commandeService.createCommande).toHaveBeenCalledWith(req.body);
-
-    expect(res.status).toHaveBeenCalledWith(200);
+    expect(rabbitmq.publishOrderCreated).toHaveBeenCalledWith(mockCommandeCreee);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       data: mockCommandeCreee,
@@ -59,7 +61,7 @@ describe("ajouter - Contrôleur de commande", () => {
       new Error("UUID du client invalide")
     );
 
-    await ajouterCommande(req, res);
+    await ajouter(req, res);
 
     expect(commandeService.validateCommandeData).toHaveBeenCalledWith(req.body);
     expect(commandeService.createCommande).not.toHaveBeenCalled();
@@ -83,7 +85,7 @@ describe("ajouter - Contrôleur de commande", () => {
       new Error("Erreur lors de la création")
     );
 
-    await ajouterCommande(req, res);
+    await ajouter(req, res);
 
     expect(commandeService.validateCommandeData).toHaveBeenCalledWith(req.body);
     expect(commandeService.createCommande).toHaveBeenCalledWith(req.body);

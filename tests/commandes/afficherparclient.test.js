@@ -1,19 +1,23 @@
-const afficherParClient = require("../controllers/commandes/afficherparclient");
-const commandeService = require("../services/CommandeService");
+const afficherParClient = require("../../controllers/commandes/afficherparclient");
+const commandeService = require("../../services/CommandeService");
 
-jest.mock("../services/CommandeService");
+jest.mock("../../services/CommandeService");
 
 describe("afficherParClient Commande Controller", () => {
   let req, res;
 
   beforeEach(() => {
-    req = { params: {} };
+    req = { params: { uuid: "550e8400-e29b-41d4-a716-446655440000" } };
     res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
     };
 
+    // Reset all mocks
     jest.clearAllMocks();
+    
+    // Setup default mock implementation
+    commandeService.getCommandesByClientId = jest.fn();
   });
 
   it("devrait retourner les commandes du client avec leurs produits", async () => {
@@ -31,13 +35,12 @@ describe("afficherParClient Commande Controller", () => {
       },
     ];
 
-    req.params.uuid_client = "550e8400-e29b-41d4-a716-446655440000";
     commandeService.getCommandesByClientId.mockResolvedValue(mockCommandes);
 
     await afficherParClient(req, res);
 
     expect(commandeService.getCommandesByClientId).toHaveBeenCalledWith(
-      "550e8400-e29b-41d4-a716-446655440000"
+      req.params.uuid
     );
 
     expect(res.json).toHaveBeenCalledWith({
@@ -47,7 +50,7 @@ describe("afficherParClient Commande Controller", () => {
   });
 
   it("devrait retourner 404 si aucune commande n'est trouvée", async () => {
-    req.params.uuid_client = "550e8400-e29b-41d4-a716-446655440000";
+    req.params.uuid = "550e8400-e29b-41d4-a716-446655440000";
     commandeService.getCommandesByClientId.mockResolvedValue([]);
 
     await afficherParClient(req, res);
@@ -60,7 +63,7 @@ describe("afficherParClient Commande Controller", () => {
   });
 
   it("devrait retourner 400 si UUID invalide (erreur spécifique)", async () => {
-    req.params.uuid_client = "invalid-uuid";
+    req.params.uuid = "invalid-uuid";
     const error = new Error("UUID invalide");
     commandeService.getCommandesByClientId.mockRejectedValue(error);
 
@@ -74,7 +77,7 @@ describe("afficherParClient Commande Controller", () => {
   });
 
   it("devrait retourner 404 en cas d'autre erreur", async () => {
-    req.params.uuid_client = "550e8400-e29b-41d4-a716-446655440000";
+    req.params.uuid = "550e8400-e29b-41d4-a716-446655440000";
     const error = new Error("Erreur inconnue");
     commandeService.getCommandesByClientId.mockRejectedValue(error);
 

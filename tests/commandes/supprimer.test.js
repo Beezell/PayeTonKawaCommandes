@@ -1,13 +1,15 @@
-const supprimerCommande = require("../controllers/commandes/supprimer");
-const commandeService = require("../services/CommandeService");
+const supprimer = require("../../controllers/commandes/supprimer");
+const commandeService = require("../../services/CommandeService");
+const rabbitmq = require("../../services/rabbitmqService");
 
-jest.mock("../services/CommandeService");
+jest.mock("../../services/CommandeService");
+jest.mock("../../services/rabbitmqService");
 
 describe("supprimer Commande Controller", () => {
   let req, res;
 
   beforeEach(() => {
-    req = { params: { uuid_commande: "123e4567-e89b-12d3-a456-426614174000" } };
+    req = { params: { uuid_commande: "550e8400-e29b-41d4-a716-446655440000" } };
     res = {
       json: jest.fn(),
       status: jest.fn().mockReturnThis(),
@@ -16,14 +18,15 @@ describe("supprimer Commande Controller", () => {
   });
 
   it("devrait supprimer une commande existante avec succès", async () => {
-    commandeService.deleteCommande.mockResolvedValue();
+    commandeService.deleteCommande.mockResolvedValue(true);
+    rabbitmq.publishOrderDeleted.mockResolvedValue(true);
 
-    await supprimerCommande(req, res);
+    await supprimer(req, res);
 
     expect(commandeService.deleteCommande).toHaveBeenCalledWith(
       req.params.uuid_commande
     );
-    expect(res.status).not.toHaveBeenCalled();
+    expect(rabbitmq.publishOrderDeleted).toHaveBeenCalledWith(req.params.uuid_commande);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: "Commande supprimée avec succès",
@@ -36,7 +39,7 @@ describe("supprimer Commande Controller", () => {
       new Error("UUID invalide")
     );
 
-    await supprimerCommande(req, res);
+    await supprimer(req, res);
 
     expect(commandeService.deleteCommande).toHaveBeenCalledWith("invalid-uuid");
     expect(res.status).toHaveBeenCalledWith(400);
@@ -51,7 +54,7 @@ describe("supprimer Commande Controller", () => {
       new Error("Commande non trouvée")
     );
 
-    await supprimerCommande(req, res);
+    await supprimer(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({
@@ -65,7 +68,7 @@ describe("supprimer Commande Controller", () => {
       new Error("Erreur inconnue")
     );
 
-    await supprimerCommande(req, res);
+    await supprimer(req, res);
 
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith({

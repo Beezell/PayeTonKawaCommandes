@@ -19,10 +19,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/afficherAll",
+              "raw": "{{baseUrl}}/commande/afficherAll",
               "host": ["{{baseUrl}}"],
-              "path": ["afficherAll"]
-            }
+              "path": ["commande", "afficherAll"]
+            },
+            "description": "Récupère la liste complète des commandes avec les produits associés"
           }
         },
         {
@@ -34,8 +35,8 @@
                 "exec": [
                   "if (pm.response.code === 201) {",
                   "  const response = pm.response.json();",
-                  "  if (response.data && response.data.id) {",
-                  "    pm.environment.set('uuid', response.data.id);",
+                  "  if (response.data && response.data.uuid) {",
+                  "    pm.environment.set('uuid_commande', response.data.uuid);",
                   "  }",
                   "}"
                 ]
@@ -56,13 +57,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"id_client\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\",\n  \"statut\": \"en_attente\",\n  \"montant\": 120.50,\n  \"mode_paiement\": \"carte\",\n  \"produits\": [\n    { \"id_prod\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"quantite\": 2 },\n    { \"id_prod\": \"d290f1ee-6c53-4b01-90e6-d701748f0851\", \"quantite\": 1 }\n  ]\n}"
+              "raw": "{\n  \"uuid_client\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"uuid_produit\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 2 },\n    { \"uuid_produit\": \"33333333-3333-3333-3333-333333333333\", \"quantite\": 1 }\n  ],\n  \"mode_paiement\": \"paypal\",\n  \"statut\": \"payee\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/ajouter",
+              "raw": "{{baseUrl}}/commande/ajouter",
               "host": ["{{baseUrl}}"],
-              "path": ["ajouter"]
-            }
+              "path": ["commande", "ajouter"]
+            },
+            "description": "Crée une nouvelle commande"
           }
         },
         {
@@ -76,14 +78,15 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/afficher/{{uuid}}",
+              "raw": "{{baseUrl}}/commande/afficher/{{uuid_commande}}",
               "host": ["{{baseUrl}}"],
-              "path": ["afficher", "{{uuid}}"]
-            }
+              "path": ["commande", "afficher", "{{uuid_commande}}"]
+            },
+            "description": "Récupère les détails d'une commande spécifique"
           }
         },
         {
-          "name": "Afficher les commandes d’un client",
+          "name": "Afficher les commandes d'un client",
           "request": {
             "method": "GET",
             "header": [
@@ -93,10 +96,11 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/commandes/client/{{idClient}}",
+              "raw": "{{baseUrl}}/commande/afficherparclient/{{uuid_client}}",
               "host": ["{{baseUrl}}"],
-              "path": ["afficherparclient", "{{idClient}}"]
-            }
+              "path": ["commande", "afficherparclient", "{{uuid_client}}"]
+            },
+            "description": "Récupère toutes les commandes d'un client spécifique"
           }
         },
         {
@@ -115,13 +119,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"statut\": \"payee\",\n  \"montant\": 180.00,\n  \"mode_paiement\": \"virement\",\n  \"produits\": [\n    { \"id_prod\": \"d290f1ee-6c54-4b01-90e6-d701748f0851\", \"quantite\": 3 }\n  ]\n}"
+              "raw": "{\n  \"uuid_client\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"uuid_produit\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 3 }\n  ],\n  \"mode_paiement\": \"virement\",\n  \"statut\": \"en_preparation\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/modifier/{{uuid}}",
+              "raw": "{{baseUrl}}/commande/modifier/{{uuid_commande}}",
               "host": ["{{baseUrl}}"],
-              "path": ["modifier", "{{uuid}}"]
-            }
+              "path": ["commande", "modifier", "{{uuid_commande}}"]
+            },
+            "description": "Modifie une commande existante"
           }
         },
         {
@@ -135,13 +140,36 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/supprimer/{{uuid}}",
+              "raw": "{{baseUrl}}/commande/supprimer/{{uuid_commande}}",
               "host": ["{{baseUrl}}"],
-              "path": ["supprimer", "{{uuid}}"]
-            }
+              "path": ["commande", "supprimer", "{{uuid_commande}}"]
+            },
+            "description": "Supprime une commande existante"
           }
         }
       ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "jwtToken",
+      "value": "votre_token_jwt",
+      "type": "string"
+    },
+    {
+      "key": "uuid_commande",
+      "value": "32db04f8-dd06-49bb-9215-613a18b3d20b",
+      "type": "string"
+    },
+    {
+      "key": "uuid_client",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
     }
   ]
 }

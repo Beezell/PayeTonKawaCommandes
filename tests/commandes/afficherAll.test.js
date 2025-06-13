@@ -1,7 +1,7 @@
-const afficherAll = require("../controllers/commandes/afficherAll");
-const commandeService = require("../services/CommandeService");
+const afficherAll = require("../../controllers/commandes/afficherAll");
+const commandeService = require("../../services/CommandeService");
 
-jest.mock("../services/CommandeService");
+jest.mock("../../services/CommandeService");
 
 describe("afficherAll Commandes Controller", () => {
   let req, res;
