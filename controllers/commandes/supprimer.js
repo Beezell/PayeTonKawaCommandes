@@ -3,10 +3,10 @@ const rabbitmq = require('../../services/rabbitmqService');
 
 const supprimerCommande = async (req, res) => {
     try {
-        const { uuid_commande } = req.params;
-        await commandeService.deleteCommande(uuid_commande);
+        const { uuid } = req.params;
+        await commandeService.deleteCommande(uuid);
 
-        await rabbitmq.publishOrderDeleted(uuid_commande);
+        await rabbitmq.publishOrderDeleted(uuid);
 
         res.status(200).json({
             success: true,

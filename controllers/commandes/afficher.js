@@ -2,8 +2,8 @@ const commandeService = require('../../services/CommandeService');
 
 const afficherCommande = async (req, res) => {
     try {
-        const { uuid_commande } = req.params;
-        const commande = await commandeService.getCommandeById(uuid_commande);
+        const { uuid } = req.params;
+        const commande = await commandeService.getCommandeById(uuid);
         
         res.json({
             success: true,

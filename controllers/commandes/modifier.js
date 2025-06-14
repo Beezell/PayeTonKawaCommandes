@@ -3,12 +3,12 @@ const rabbitmq = require('../../services/rabbitmqService');
 
 const modifierCommande = async (req, res) => {
     try {
-        const { uuid_commande } = req.params;
+        const { uuid } = req.params;
         const commandeData = req.body;
 
         await commandeService.validateCommandeData(commandeData);
 
-        const commande = await commandeService.updateCommande(uuid_commande, commandeData);
+        const commande = await commandeService.updateCommande(uuid, commandeData);
 
         if (!commande) {
             return res.status(404).json({
@@ -21,7 +21,7 @@ const modifierCommande = async (req, res) => {
 
         if (commandeData.statut && commandeData.statut !== commande.statut) {
             await rabbitmq.publishOrderStatusChanged({
-                orderId: uuid_commande,
+                orderId: uuid,
                 oldStatus: commande.statut,
                 newStatus: commandeData.statut
             });

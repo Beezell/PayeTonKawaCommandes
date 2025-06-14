@@ -13,11 +13,11 @@ const supprimer = require('../controllers/commandes/supprimer');
 const modifier = require('../controllers/commandes/modifier');
 
 router.get('/afficherAll', adminOnly, afficherAll);
-router.get('/afficher/:uuid_commande', authorized, validateUUID, afficher);
+router.get('/afficher/:uuid', authorized, validateUUID, afficher);
 router.get('/afficherparclient/:uuid', validateUUID, authorized, afficherParClient);
 router.post('/ajouter', authorized, ajouter);
-router.put('/modifier/:uuid_commande', adminOnly, validateUUID, modifier);
-router.delete('/supprimer/:uuid_commande', adminOnly, validateUUID, supprimer);
+router.put('/modifier/:uuid', adminOnly, validateUUID, modifier);
+router.delete('/supprimer/:uuid', adminOnly, validateUUID, supprimer);
 
 /**
  * @swagger
