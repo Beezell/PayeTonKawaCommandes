@@ -10,6 +10,66 @@
       "item": [
         {
           "name": "Afficher toutes les commandes",
+          "event": [
+  {
+    "listen": "test",
+    "script": {
+      "exec": [
+        "pm.test(\"Status code is 200\", function () {",
+        "    pm.response.to.have.status(200);",
+        "});",
+        "",
+        "pm.test(\"Response 'success' is true\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.success).to.be.true;",
+        "});",
+        "",
+        "pm.test(\"Response has a data array\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.data).to.be.an('array');",
+        "});",
+        "",
+        "pm.test(\"Each order has expected properties\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    jsonData.data.forEach(function(order) {",
+        "        pm.expect(order).to.have.property('id');",
+        "        pm.expect(order).to.have.property('created_at');",
+        "        pm.expect(order).to.have.property('id_client');",
+        "        pm.expect(order).to.have.property('statut');",
+        "        pm.expect(order).to.have.property('montant');",
+        "        pm.expect(order).to.have.property('mode_paiement');",
+        "        pm.expect(order).to.have.property('produits');",
+        "    });",
+        "});",
+        "",
+        "pm.test(\"Response data has correct count\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    pm.expect(jsonData.data.length).to.equal(jsonData.count);",
+        "});",
+        "",
+        "pm.test(\"Each order has products array\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    jsonData.data.forEach(function(order) {",
+        "        pm.expect(order.produits).to.be.an('array');",
+        "        pm.expect(order.produits.length).to.be.above(0);",
+        "    });",
+        "});",
+        "",
+        "pm.test(\"Each product has expected properties\", function () {",
+        "    var jsonData = pm.response.json();",
+        "    jsonData.data.forEach(function(order) {",
+        "        order.produits.forEach(function(product) {",
+        "            pm.expect(product).to.have.property('id');",
+        "            pm.expect(product).to.have.property('id_commande');",
+        "            pm.expect(product).to.have.property('id_prod');",
+        "            pm.expect(product).to.have.property('quantite');",
+        "        });",
+        "    });",
+        "});"
+      ]
+    }
+  }
+],
           "request": {
             "method": "GET",
             "header": [
@@ -19,9 +79,9 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/commande/afficherAll",
+              "raw": "{{baseUrl}}/commandes/afficherAll",
               "host": ["{{baseUrl}}"],
-              "path": ["commande", "afficherAll"]
+              "path": ["commandes", "afficherAll"]
             },
             "description": "Récupère la liste complète des commandes avec les produits associés"
           }
@@ -33,12 +93,58 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "if (pm.response.code === 201) {",
-                  "  const response = pm.response.json();",
-                  "  if (response.data && response.data.uuid) {",
-                  "    pm.environment.set('uuid_commande', response.data.uuid);",
-                  "  }",
-                  "}"
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response 'success' is true\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response has data object\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test(\"Order has expected properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('id');",
+                  "    pm.expect(jsonData.data).to.have.property('created_at');",
+                  "    pm.expect(jsonData.data).to.have.property('id_client');",
+                  "    pm.expect(jsonData.data).to.have.property('statut');",
+                  "    pm.expect(jsonData.data).to.have.property('montant');",
+                  "    pm.expect(jsonData.data).to.have.property('mode_paiement');",
+                  "    pm.expect(jsonData.data).to.have.property('produits');",
+                  "});",
+                  "",
+                  "pm.test(\"Order has products array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.produits).to.be.an('array');",
+                  "    pm.expect(jsonData.data.produits.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Each product has expected properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.data.produits.forEach(function(product) {",
+                  "        pm.expect(product).to.have.property('id');",
+                  "        pm.expect(product).to.have.property('id_commande');",
+                  "        pm.expect(product).to.have.property('id_prod');",
+                  "        pm.expect(product).to.have.property('quantite');",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Store order ID and client ID for future tests\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.success && jsonData.data) {",
+                  "        if (jsonData.data.id) {",
+                  "            pm.environment.set('commandeId', jsonData.data.id);",
+                  "        }",
+                  "        if (jsonData.data.id_client) {",
+                  "            pm.environment.set('clientId', jsonData.data.id_client);",
+                  "        }",
+                  "    }",
+                  "});"
                 ]
               }
             }
@@ -57,18 +163,75 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"uuid_client\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"uuid_produit\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 2 },\n    { \"uuid_produit\": \"33333333-3333-3333-3333-333333333333\", \"quantite\": 1 }\n  ],\n  \"mode_paiement\": \"paypal\",\n  \"statut\": \"payee\"\n}"
+              "raw": "{\n  \"uuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"id_prod\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 2 },\n    { \"id_prod\": \"33333333-3333-3333-3333-333333333333\", \"quantite\": 1 }\n  ],\n  \"mode_paiement\": \"paypal\",\n  \"statut\": \"payee\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/commande/ajouter",
+              "raw": "{{baseUrl}}/commandes/ajouter",
               "host": ["{{baseUrl}}"],
-              "path": ["commande", "ajouter"]
+              "path": ["commandes", "ajouter"]
             },
             "description": "Crée une nouvelle commande"
           }
         },
         {
           "name": "Afficher une commande par UUID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"Response 'success' is true\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.success).to.be.true;",
+                  "});",
+                  "",
+                  "pm.test(\"Response has data object\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.be.an('object');",
+                  "});",
+                  "",
+                  "pm.test(\"Order has expected properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data).to.have.property('id');",
+                  "    pm.expect(jsonData.data).to.have.property('created_at');",
+                  "    pm.expect(jsonData.data).to.have.property('id_client');",
+                  "    pm.expect(jsonData.data).to.have.property('statut');",
+                  "    pm.expect(jsonData.data).to.have.property('montant');",
+                  "    pm.expect(jsonData.data).to.have.property('mode_paiement');",
+                  "    pm.expect(jsonData.data).to.have.property('produits');",
+                  "});",
+                  "",
+                  "pm.test(\"Order has products array\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.data.produits).to.be.an('array');",
+                  "    pm.expect(jsonData.data.produits.length).to.be.above(0);",
+                  "});",
+                  "",
+                  "pm.test(\"Each product has expected properties\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    jsonData.data.produits.forEach(function(product) {",
+                  "        pm.expect(product).to.have.property('id');",
+                  "        pm.expect(product).to.have.property('id_commande');",
+                  "        pm.expect(product).to.have.property('id_prod');",
+                  "        pm.expect(product).to.have.property('quantite');",
+                  "    });",
+                  "});",
+                  "",
+                  "pm.test(\"Order ID matches requested UUID\", function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    var requestedUuid = pm.environment.get('commandeId');",
+                  "    if (requestedUuid) {",
+                  "        pm.expect(jsonData.data.id).to.equal(requestedUuid);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [
@@ -78,98 +241,227 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/commande/afficher/{{uuid_commande}}",
+              "raw": "{{baseUrl}}/commandes/afficher/{{commandeId}}",
               "host": ["{{baseUrl}}"],
-              "path": ["commande", "afficher", "{{uuid_commande}}"]
+              "path": ["commandes", "afficher", "{{commandeId}}"]
             },
             "description": "Récupère les détails d'une commande spécifique"
           }
         },
         {
-          "name": "Afficher les commandes d'un client",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwtToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/commande/afficherparclient/{{uuid_client}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["commande", "afficherparclient", "{{uuid_client}}"]
-            },
-            "description": "Récupère toutes les commandes d'un client spécifique"
+        "name": "Afficher les commandes d'un client",
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 200\", function () {",
+                "    pm.response.to.have.status(200);",
+                "});",
+                "",
+                "pm.test(\"Response 'success' is true\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.success).to.be.true;",
+                "});",
+                "",
+                "pm.test(\"Response has data array\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.data).to.be.an('array');",
+                "});",
+                "",
+                "pm.test(\"At least one order exists\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.data.length).to.be.above(0);",
+                "});",
+                "",
+                "pm.test(\"Each order has expected properties\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    jsonData.data.forEach(function(order) {",
+                "        pm.expect(order).to.have.property('id');",
+                "        pm.expect(order).to.have.property('created_at');",
+                "        pm.expect(order).to.have.property('id_client');",
+                "        pm.expect(order).to.have.property('statut');",
+                "        pm.expect(order).to.have.property('montant');",
+                "        pm.expect(order).to.have.property('mode_paiement');",
+                "        pm.expect(order).to.have.property('produits');",
+                "    });",
+                "});",
+                "",
+                "pm.test(\"Each order has products array\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    jsonData.data.forEach(function(order) {",
+                "        pm.expect(order.produits).to.be.an('array');",
+                "    });",
+                "});",
+                "",
+                "pm.test(\"Each product has expected properties\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    jsonData.data.forEach(function(order) {",
+                "        order.produits.forEach(function(product) {",
+                "            pm.expect(product).to.have.property('id');",
+                "            pm.expect(product).to.have.property('id_commande');",
+                "            pm.expect(product).to.have.property('id_prod');",
+                "            pm.expect(product).to.have.property('quantite');",
+                "        });",
+                "    });",
+                "});",
+                "",
+                "pm.test(\"All orders belong to the requested client\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    var requestedClientId = pm.environment.get('clientId');",
+                "    if (requestedClientId) {",
+                "        jsonData.data.forEach(function(order) {",
+                "            pm.expect(order.id_client).to.equal(requestedClientId);",
+                "        });",
+                "    }",
+                "});"
+              ]
+            }
           }
-        },
-        {
-          "name": "Modifier une commande",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwtToken}}"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"uuid_client\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"uuid_produit\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 3 }\n  ],\n  \"mode_paiement\": \"virement\",\n  \"statut\": \"en_preparation\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/commande/modifier/{{uuid_commande}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["commande", "modifier", "{{uuid_commande}}"]
-            },
-            "description": "Modifie une commande existante"
-          }
-        },
-        {
-          "name": "Supprimer une commande",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{jwtToken}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/commande/supprimer/{{uuid_commande}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["commande", "supprimer", "{{uuid_commande}}"]
-            },
-            "description": "Supprime une commande existante"
-          }
+        ],
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{jwtToken}}"
+            }
+          ],
+          "url": {
+            "raw": "{{baseUrl}}/commandes/afficherparclient/{{clientId}}",
+            "host": ["{{baseUrl}}"],
+            "path": ["commandes", "afficherparclient", "{{clientId}}"]
+          },
+          "description": "Récupère toutes les commandes d'un client spécifique"
         }
+      },
+      {
+        "name": "Modifier une commande",
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 200\", function () {",
+                "    pm.response.to.have.status(200);",
+                "});",
+                "",
+                "pm.test(\"Response 'success' is true\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.success).to.be.true;",
+                "});",
+                "",
+                "pm.test(\"Response has data object\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.data).to.be.an('object');",
+                "});",
+                "",
+                "pm.test(\"Commande modifiée contient les bonnes propriétés\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    var commande = jsonData.data;",
+                "    pm.expect(commande).to.have.property('id');",
+                "    pm.expect(commande).to.have.property('created_at');",
+                "    pm.expect(commande).to.have.property('id_client');",
+                "    pm.expect(commande).to.have.property('statut');",
+                "    pm.expect(commande).to.have.property('montant');",
+                "    pm.expect(commande).to.have.property('mode_paiement');",
+                "    pm.expect(commande).to.have.property('produits');",
+                "});",
+                "",
+                "pm.test(\"Le champ 'message' est présent et approprié\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.message).to.eql(\"Commande modifiée avec succès\");",
+                "});",
+                "",
+                "pm.test(\"Les produits sont bien définis et complets\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    var produits = jsonData.data.produits;",
+                "    pm.expect(produits).to.be.an('array');",
+                "    produits.forEach(function(prod) {",
+                "        pm.expect(prod).to.have.property('id');",
+                "        pm.expect(prod).to.have.property('id_commande');",
+                "        pm.expect(prod).to.have.property('id_prod');",
+                "        pm.expect(prod).to.have.property('quantite');",
+                "    });",
+                "});",
+                "",
+                "pm.test(\"L'ID de commande retourné correspond à celui envoyé\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    var expectedId = pm.environment.get('commandeId');",
+                "    if (expectedId) {",
+                "        pm.expect(jsonData.data.id).to.equal(expectedId);",
+                "    }",
+                "});"
+              ]
+            }
+          }
+        ],
+        "request": {
+          "method": "PUT",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer {{jwtToken}}"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"uuid\": \"{{commandeId}}\",\n  \"produits\": [\n    { \"id_prod\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 3 }\n  ],\n  \"mode_paiement\": \"virement\",\n  \"statut\": \"en_preparation\"\n}"
+          },
+          "url": {
+            "raw": "{{baseUrl}}/commandes/modifier/{{commandeId}}",
+            "host": ["{{baseUrl}}"],
+            "path": ["commandes", "modifier", "{{commandeId}}"]
+          },
+          "description": "Modifie une commande existante"
+        }
+      },
+       {
+        "name": "Supprimer une commande",
+        "event": [
+          {
+            "listen": "test",
+            "script": {
+              "exec": [
+                "pm.test(\"Status code is 200\", function () {",
+                "    pm.response.to.have.status(200);",
+                "});",
+                "",
+                "pm.test(\"Response 'success' is true\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData.success).to.be.true;",
+                "});",
+                "",
+                "pm.test(\"Response contains success message\", function () {",
+                "    var jsonData = pm.response.json();",
+                "    pm.expect(jsonData).to.have.property('message');",
+                "    pm.expect(jsonData.message).to.eql(\"Commande supprimée avec succès\");",
+                "});"
+              ]
+            }
+          }
+        ],
+        "request": {
+          "method": "DELETE",
+          "header": [
+            {
+              "key": "Authorization",
+              "value": "Bearer {{jwtToken}}"
+            }
+          ],
+          "url": {
+            "raw": "{{baseUrl}}/commandes/supprimer/{{commandeId}}",
+            "host": ["{{baseUrl}}"],
+            "path": ["commandes", "supprimer", "{{commandeId}}"]
+          },
+          "description": "Supprime une commande existante"
+        }
+      }
       ]
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:3000",
-      "type": "string"
-    },
-    {
-      "key": "jwtToken",
-      "value": "votre_token_jwt",
-      "type": "string"
-    },
-    {
-      "key": "uuid_commande",
-      "value": "32db04f8-dd06-49bb-9215-613a18b3d20b",
-      "type": "string"
-    },
-    {
-      "key": "uuid_client",
-      "value": "550e8400-e29b-41d4-a716-446655440000",
-      "type": "string"
     }
   ]
 }
