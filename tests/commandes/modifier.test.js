@@ -80,7 +80,7 @@ describe("modifierCommande Controller", () => {
       uuid: req.params.uuid,
       statut: "payee",
       mode_paiement: "paypal",
-      uuid: "11111111-1111-1111-1111-111111111111",
+      id_client: "11111111-1111-1111-1111-111111111111",
       produits: [
         { id_prod: "22222222-2222-2222-2222-222222222222", quantite: 2 }
       ]
