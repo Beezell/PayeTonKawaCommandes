@@ -60,7 +60,7 @@ class CommandeService {
             return await prisma.commandes.create({
                 data: {
                   mode_paiement: commandeInfo.mode_paiement,
-                  statut: commandeInfo.statut,
+                  statut: "en attente",
                   montant: parseFloat(commandeInfo.montant) || 0,
                   id_client: commandeInfo.uuid,
                   produits: {
@@ -149,8 +149,8 @@ async deleteCommande(uuid) {
     async validateCommandeData(commandeData) {
         const { uuid, statut, mode_paiement, produits } = commandeData;
 
-        if (!uuid || !statut || !mode_paiement) {
-            throw new Error('uuid, statut et mode_paiement sont requis');
+        if (!uuid || !mode_paiement) {
+            throw new Error('uuid et mode_paiement sont requis');
         }
 
 

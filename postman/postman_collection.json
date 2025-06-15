@@ -163,7 +163,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"uuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"id_prod\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 2 },\n    { \"id_prod\": \"33333333-3333-3333-3333-333333333333\", \"quantite\": 1 }\n  ],\n  \"mode_paiement\": \"paypal\",\n  \"statut\": \"payee\"\n}"
+              "raw": "{\n  \"uuid\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"produits\": [\n    { \"id_prod\": \"22222222-2222-2222-2222-222222222222\", \"quantite\": 2 },\n    { \"id_prod\": \"33333333-3333-3333-3333-333333333333\", \"quantite\": 1 }\n  ],\n  \"mode_paiement\": \"paypal\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/commandes/ajouter",
