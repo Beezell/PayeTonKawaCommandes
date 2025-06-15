@@ -3,10 +3,10 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'api-produits'
+  - job_name: 'api-commandes'
     static_configs:
       - targets: 
-        - 'api-produits:3002'
+        - 'api-commandes:3002'
         - 'host.docker.internal:3002'
     metrics_path: '/metrics'
 
