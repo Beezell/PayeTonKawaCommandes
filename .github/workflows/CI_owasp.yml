@@ -12,7 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Analyse avec Semgrep et OWASP
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: p/owasp-top-ten
+      - name: Installer Semgrep (dernière version)
+        run: |
+          pip install --upgrade pip
+          pip install semgrep
+
+      - name: Analyse avec Semgrep (OWASP + verbose)
+        run: |
+          semgrep --config=p/owasp-top-ten --verbose --metrics=off
