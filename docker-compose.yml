@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api-commandes:
-    build: .
+    image: sterkenz/microservice-commandes:latest
     ports:
       - "3002:3002"
     environment:
@@ -11,9 +11,6 @@ services:
       - RABBITMQ_URL=amqp://admin:admin@rabbitmq:5672
       - DEBUG=*
       - PORT=3002
-    volumes:
-      - ./:/app
-      - /app/node_modules
     depends_on:
       rabbitmq:
         condition: service_healthy
