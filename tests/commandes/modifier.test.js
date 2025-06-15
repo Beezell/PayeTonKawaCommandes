@@ -10,11 +10,11 @@ describe("modifierCommande Controller", () => {
 
   beforeEach(() => {
     req = {
-      params: { uuid_commande: "550e8400-e29b-41d4-a716-446655440000" },
+      params: { uuid: "550e8400-e29b-41d4-a716-446655440000" },
       body: {
-        uuid_client: "11111111-1111-1111-1111-111111111111",
+        uuid: "11111111-1111-1111-1111-111111111111",
         produits: [
-          { uuid_produit: "22222222-2222-2222-2222-222222222222", quantite: 2 }
+          { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 }
         ],
         mode_paiement: "paypal",
         statut: "payee"
@@ -38,7 +38,7 @@ describe("modifierCommande Controller", () => {
   it("devrait modifier une commande avec succès", async () => {
     const mockData = req.body;
     const mockCommandeModifiee = {
-      uuid: req.params.uuid_commande,
+      uuid: req.params.uuid,
       ...mockData
     };
 
@@ -50,7 +50,7 @@ describe("modifierCommande Controller", () => {
 
     expect(commandeService.validateCommandeData).toHaveBeenCalledWith(mockData);
     expect(commandeService.updateCommande).toHaveBeenCalledWith(
-      req.params.uuid_commande,
+      req.params.uuid,
       mockData
     );
     expect(rabbitmq.publishOrderUpdated).toHaveBeenCalledWith(mockCommandeModifiee);
@@ -77,12 +77,12 @@ describe("modifierCommande Controller", () => {
   it("devrait publier un événement de changement de statut", async () => {
     // Simuler une commande existante avec un statut différent
     const mockCommandeExistante = {
-      uuid: req.params.uuid_commande,
+      uuid: req.params.uuid,
       statut: "payee",
       mode_paiement: "paypal",
-      uuid_client: "11111111-1111-1111-1111-111111111111",
+      uuid: "11111111-1111-1111-1111-111111111111",
       produits: [
-        { uuid_produit: "22222222-2222-2222-2222-222222222222", quantite: 2 }
+        { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 }
       ]
     };
 
@@ -102,7 +102,7 @@ describe("modifierCommande Controller", () => {
     await modifier(req, res);
 
     expect(rabbitmq.publishOrderStatusChanged).toHaveBeenCalledWith({
-      orderId: req.params.uuid_commande,
+      orderId: req.params.uuid,
       oldStatus: "payee",
       newStatus: "en_preparation"
     });
@@ -126,9 +126,9 @@ describe("modifierCommande Controller", () => {
     const validData = {
       statut: "payee",
       mode_paiement: "paypal",
-      uuid_client: "11111111-1111-1111-1111-111111111111",
+      uuid: "11111111-1111-1111-1111-111111111111",
       produits: [
-        { uuid_produit: "22222222-2222-2222-2222-222222222222", quantite: 2 },
+        { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 },
       ],
     };
     req.body = validData;

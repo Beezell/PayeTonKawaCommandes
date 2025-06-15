@@ -25,7 +25,7 @@ describe("afficher Commande Controller", () => {
       ],
     };
 
-    req.params.uuid_commande = "123e4567-e89b-12d3-a456-426614174000";
+    req.params.uuid = "123e4567-e89b-12d3-a456-426614174000";
     commandeService.getCommandeById.mockResolvedValue(mockCommande);
 
     await afficher(req, res);
@@ -41,7 +41,7 @@ describe("afficher Commande Controller", () => {
   });
 
   it("devrait retourner 404 pour un UUID invalide", async () => {
-    req.params.uuid_commande = "invalid-uuid";
+    req.params.uuid = "invalid-uuid";
     commandeService.getCommandeById.mockRejectedValue(
       new Error("UUID invalide")
     );
@@ -56,7 +56,7 @@ describe("afficher Commande Controller", () => {
   });
 
   it("devrait retourner 404 si la commande est introuvable", async () => {
-    req.params.uuid_commande = "123e4567-e89b-12d3-a456-426614174000";
+    req.params.uuid = "123e4567-e89b-12d3-a456-426614174000";
     commandeService.getCommandeById.mockRejectedValue(
       new Error("Commande non trouvée")
     );
@@ -72,7 +72,7 @@ describe("afficher Commande Controller", () => {
 
   it("devrait retourner 404 en cas d'erreur serveur", async () => {
     const mockError = new Error("Erreur serveur");
-    req.params.uuid_commande = "123e4567-e89b-12d3-a456-426614174000";
+    req.params.uuid = "123e4567-e89b-12d3-a456-426614174000";
     commandeService.getCommandeById.mockRejectedValue(mockError);
 
     await afficher(req, res);

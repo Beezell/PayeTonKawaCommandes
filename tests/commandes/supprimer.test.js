@@ -24,9 +24,9 @@ describe("supprimer Commande Controller", () => {
     await supprimer(req, res);
 
     expect(commandeService.deleteCommande).toHaveBeenCalledWith(
-      req.params.uuid_commande
+      req.params.uuid
     );
-    expect(rabbitmq.publishOrderDeleted).toHaveBeenCalledWith(req.params.uuid_commande);
+    expect(rabbitmq.publishOrderDeleted).toHaveBeenCalledWith(req.params.uuid);
     expect(res.json).toHaveBeenCalledWith({
       success: true,
       message: "Commande supprimée avec succès",
@@ -34,7 +34,7 @@ describe("supprimer Commande Controller", () => {
   });
 
   it("devrait retourner 400 pour un UUID invalide", async () => {
-    req.params.uuid_commande = "invalid-uuid";
+    req.params.uuid = "invalid-uuid";
     commandeService.deleteCommande.mockRejectedValue(
       new Error("UUID invalide")
     );
