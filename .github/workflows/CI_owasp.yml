@@ -12,8 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Installer Semgrep
+      - name: Analyse avec Semgrep et OWASP
         uses: returntocorp/semgrep-action@v1
-
-      - name: Analyse avec les règles OWASP
-        run: semgrep --config "p/owasp-top-ten" .
+        with:
+          config: p/owasp-top-ten
