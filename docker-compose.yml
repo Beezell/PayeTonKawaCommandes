@@ -5,6 +5,8 @@ services:
     image: sterkenz/microservice-commandes:latest
     ports:
       - "3002:3002"
+    env_file:
+      - .env
     environment:
       - NODE_ENV=development
       - DATABASE_URL=process.env.DATABASE_URL
