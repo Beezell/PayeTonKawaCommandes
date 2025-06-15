@@ -14,7 +14,7 @@ describe("modifierCommande Controller", () => {
       body: {
         uuid: "11111111-1111-1111-1111-111111111111",
         produits: [
-          { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 }
+          { id_prod: "22222222-2222-2222-2222-222222222222", quantite: 2 }
         ],
         mode_paiement: "paypal",
         statut: "payee"
@@ -82,7 +82,7 @@ describe("modifierCommande Controller", () => {
       mode_paiement: "paypal",
       uuid: "11111111-1111-1111-1111-111111111111",
       produits: [
-        { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 }
+        { id_prod: "22222222-2222-2222-2222-222222222222", quantite: 2 }
       ]
     };
 
@@ -128,7 +128,7 @@ describe("modifierCommande Controller", () => {
       mode_paiement: "paypal",
       uuid: "11111111-1111-1111-1111-111111111111",
       produits: [
-        { uuid: "22222222-2222-2222-2222-222222222222", quantite: 2 },
+        { id_prod: "22222222-2222-2222-2222-222222222222", quantite: 2 },
       ],
     };
     req.body = validData;
