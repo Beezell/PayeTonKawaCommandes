@@ -1,5 +1,6 @@
 const commandeService = require('../../services/CommandeService');
 const rabbitmq = require('../../services/rabbitmqService');
+const { messagesSent, messagesReceived } = require('../metrics');
 
 const supprimerCommande = async (req, res) => {
     try {
@@ -7,6 +8,7 @@ const supprimerCommande = async (req, res) => {
         await commandeService.deleteCommande(uuid);
 
         await rabbitmq.publishOrderDeleted(uuid);
+        messagesSent.inc({ queue: 'order.deleted' });
 
         res.status(200).json({
             success: true,

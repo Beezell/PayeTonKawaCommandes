@@ -1,5 +1,6 @@
 const commandeService = require('../../services/CommandeService');
 const rabbitmq = require('../../services/rabbitmqService');
+const { messagesSent, messagesReceived } = require('../metrics');
 
 const modifierCommande = async (req, res) => {
     try {
@@ -18,6 +19,7 @@ const modifierCommande = async (req, res) => {
         }
 
         await rabbitmq.publishOrderUpdated(commande);
+        messagesSent.inc({ queue: 'order.updated' });
 
         if (commandeData.statut && commandeData.statut !== commande.statut) {
             await rabbitmq.publishOrderStatusChanged({
@@ -25,6 +27,7 @@ const modifierCommande = async (req, res) => {
                 oldStatus: commande.statut,
                 newStatus: commandeData.statut
             });
+            messagesSent.inc({ queue: 'order.status.changed' });
         }
 
         res.status(200).json({
