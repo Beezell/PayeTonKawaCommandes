@@ -15,7 +15,7 @@ const modifier = require('../controllers/commandes/modifier');
 router.get('/afficherAll', adminOnly, afficherAll);
 router.get('/afficher/:uuid', authorized, validateUUID, afficher);
 router.get('/afficherparclient/:uuid', validateUUID, authorized, afficherParClient);
-router.post('/ajouter', authorized, ajouter);
+router.post('/ajouter', ajouter);
 router.put('/modifier/:uuid', adminOnly, validateUUID, modifier);
 router.delete('/supprimer/:uuid', adminOnly, validateUUID, supprimer);
 
