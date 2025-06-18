@@ -1,6 +1,6 @@
 const commandeService = require('../../services/CommandeService');
 const rabbitmq = require('../../services/rabbitmqService');
-const { messagesSent, messagesReceived } = require('../metrics');
+const { messagesSent, messagesReceived } = require('../../metrics');
 
 const supprimerCommande = async (req, res) => {
     try {
