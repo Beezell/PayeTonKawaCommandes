@@ -91,3 +91,418 @@
   level: 'info',
   message: 'API Call Success'
 }
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:09:10'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:09:10'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:09:14',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 401,
+  duration: '36ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 2 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'warn',
+  message: 'API Call Warning'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:09:29'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:09:29'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:09:33',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '883ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 2 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:15:38'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:15:38'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:15:41',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '1081ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 2 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:16:33',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '384ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:17:43'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:17:43'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:17:48',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '1459ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:18:38',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '292ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:18:48'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:18:48'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:18:52',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '874ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:19:24',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '340ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:19:49'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:19:49'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:19:56',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '1150ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:21:50'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:21:50'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:22:00',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '1116ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
+{
+  service: 'api-produits',
+  port: 3002,
+  environment: 'development',
+  features: [
+    'DDoS Protection',
+    'Prometheus Metrics',
+    'Structured Logging',
+    'RabbitMQ'
+  ],
+  level: 'info',
+  message: 'Server started',
+  timestamp: '2025-06-18 12:22:20'
+}
+{
+  service: 'api-produits',
+  api: 'http://localhost:3002/api',
+  metrics: 'http://localhost:3002/metrics',
+  swagger: 'http://localhost:3002/api-docs',
+  level: 'info',
+  message: 'API endpoints available',
+  timestamp: '2025-06-18 12:22:20'
+}
+{
+  service: 'api-produits',
+  timestamp: '2025-06-18 12:22:25',
+  method: 'POST',
+  url: '/api/commandes/ajouter',
+  route: '/ajouter',
+  statusCode: 200,
+  duration: '899ms',
+  userAgent: 'PostmanRuntime/7.44.0',
+  ip: '::1',
+  query: {},
+  body: {
+    uuid: '550e8400-e29b-41d4-a716-446655440000',
+    produits: [
+      { id_prod: '1ae186a0-a587-4479-a1e5-cea01f6d5516', quantite: 10 }
+    ],
+    mode_paiement: 'paypal'
+  },
+  level: 'info',
+  message: 'API Call Success'
+}
