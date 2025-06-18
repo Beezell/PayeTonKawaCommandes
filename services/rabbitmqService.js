@@ -1,6 +1,7 @@
 const amqp = require('amqplib');
 require('dotenv').config();
 const { messagesSent, messagesReceived } = require('../metrics');
+const CommandeService = require('./CommandeService');
 
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://admin:admin@localhost:4001';
 const MAX_RETRIES = 3;
@@ -178,6 +179,10 @@ class RabbitMQService {
                         console.log('Received order status changed message:', content);
                         messagesSent.inc({ queue: 'order.status.changed' });
                         this.channel.ack(msg);
+                        if (content.statut === 'validée') {
+                            await CommandeService.updateCommande(content.id, { statut: 'validée' });
+                            console.log(`Commande ${content.id} mise à jour avec statut validée`);
+                        }
                     } catch (error) {
                         console.error('Error processing order status changed message:', error);
                         this.channel.nack(msg, false, false);
